@@ -22,7 +22,6 @@ const rest = new REST().setToken(discordToken);
 	try {
 		console.log(`[자석이] ${commands.length} 개 명령어를 새로고침 합니다..`);
 
-		// The put method is used to fully refresh all commands in the guild with the current set
 		const data = await rest.put(
 			Routes.applicationGuildCommands(clientId, guildId),
 			{ body: commands },

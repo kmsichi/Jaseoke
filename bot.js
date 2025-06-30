@@ -4,9 +4,11 @@ const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
 const { clientId, discordToken } = require('./config.json');
 const { REST, Routes, Message, MessageFlags } = require('discord.js');
 const { error } = require('node:console');
+const { } = require("./deployCommand.js");
 
 const client = new Client({ intents: [
-        GatewayIntentBits.Guilds
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildVoiceStates
     ]
 });
 
@@ -23,7 +25,7 @@ for (const file of commandFiles) {
 }
 
 client.once(Events.ClientReady, readyClient => {
-    console.log(`${readyClient.user.tag}, 온라인!`);
+    console.log(`[자석이] ${readyClient.user.tag}, 온라인!`);
 })
 
 client.on(Events.InteractionCreate, async interaction => {
