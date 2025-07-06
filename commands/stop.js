@@ -1,5 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const ServerQueue = require("../music/ServerQueue");
+const { getVoiceConnection } = require("@discordjs/voice");
+const locale = require("../util/Locale");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -18,9 +20,9 @@ module.exports = {
             "zh-TW": "停止所有播放的音樂",
         }),
     async execute(interaction) {
-        const queue = ServerQueue.get(interaction.guildId);
+        const queue = await ServerQueue.get(interaction.guildId);
         queue.songs.length = 1;
         getVoiceConnection(interaction.guildId).state.subscription.player.stop();
-        await interaction.reply({content: await locale.getLanguage(lang, "message_stop") ?? "music_stop"});
+        await interaction.reply({content: await locale.getLanguage(interaction.locale, "message_stop") ?? "music_stop"});
     }
 }

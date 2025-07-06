@@ -1,6 +1,7 @@
 const { getVoiceConnection } = require("@discordjs/voice");
 const { SlashCommandBuilder, MessageFlags } = require("discord.js");
 const { queue } = require("../music/ServerQueue");
+const locale = require("../util/Locale");
 
 module.exports = {
     data: new SlashCommandBuilder()

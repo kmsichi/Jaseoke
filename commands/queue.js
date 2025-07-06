@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, MessageFlags, EmbedBuilder } = require('discord.js');
 const ServerQueue = require('../music/ServerQueue');
+const locale = require("../util/Locale");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,6 +20,7 @@ module.exports = {
         }),
     async execute(interaction) {
         const queue = ServerQueue.get(interaction.guildId);
+        const lang = interaction.locale;
         if (!queue) return await interaction.reply({content: await locale.getLanguage(lang, "error_no_queue") ?? "no_queue", flags: MessageFlags.Ephemeral});
 
         let titles = "";

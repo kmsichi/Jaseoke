@@ -1,5 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { ServerQueue } = require("../music/ServerQueue.js");
+const { getVoiceConnection } = require("@discordjs/voice");
+const ServerQueue = require("../music/ServerQueue.js");
+const locale = require("../util/Locale");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -18,16 +20,16 @@ module.exports = {
             "zh-TW": "停止所有播放的音樂",
         }),
     async execute(interaction) {
+        const lang = interaction.locale;
         if (!interaction.member.voice.channel)
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_voice") ?? "no_voice", flags: MessageFlags.Ephemeral});
         if (interaction.member.voice.channel !== interaction.guild.members.me.voice.channel)
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_samechannel") ?? "not_samechannel", flags: MessageFlags.Ephemeral});
-        let serverQueue = queue.get(interaction.guildId);
+        let serverQueue = ServerQueue.get(interaction.guildId);
         if (!serverQueue || serverQueue.songs.length === 0)
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_queue") ?? "no_queue", MessageFlags: MessageFlags.Ephemeral});
         
-        
-        const queue = ServerQueue.get(interaction.guildId);
+        const queue = await ServerQueue.get(interaction.guildId);
         const connection = getVoiceConnection(interaction.guildId);
         if (queue.pause == true) 
             connection.state.subscription.player.unpause();
