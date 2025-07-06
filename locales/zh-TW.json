@@ -1,0 +1,15 @@
+{
+    "message_ping": "乓!",
+    "message_play_addsong" : "添加了歌曲",
+    "message_play_channel": "頻道",
+    "message_play_length":"視頻長度",
+    "message_queue" : " 播放列表",
+    "message_nowplaying" : "現在正在玩",
+    "message_skip" : " 跳過音樂了！",
+    "message_stop":"停止播放所有音樂。",
+    "error_no_voice":"請進入語音頻道後使用命令語。",
+    "error_no_joinable" : ":x: 您沒有權限訪問語音頻道!",
+    "error_no_videoId" : " 不是正確的YouTube視頻地址!",
+    "error_no_queue" : " 沒有正在播放的視頻!",
+    "error_no_samechannel":"請在類似機器人的語音頻道上使用指令。"
+}

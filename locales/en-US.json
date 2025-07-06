@@ -1,0 +1,15 @@
+{
+    "message_ping": "Pong!",
+    "message_play_addsong": "곡을 추가했습니다",
+    "message_play_channel": "채널",
+    "message_play_length": "영상 길이",
+    "message_queue": "플레이리스트",
+    "message_nowplaying": "현재 플레이 중",
+    "message_skip": "음악을 스킵했습니다!",
+    "message_stop": "모든 음악의 재생을 멈춥니다.",
+    "error_no_voice": "음성 채널에 입장한 뒤 명령어를 이용해주세요.",
+    "error_no_joinable": ":x: 음성 채널에 접속할 권한이 없습니다!",
+    "error_no_videoId": "올바른 유튜브 영상 주소가 아닙니다!",
+    "error_no_queue": "현재 재생중인 영상이 없습니다!",
+    "error_no_samechannel": "봇과 같은 음성 채널에서 명령어를 이용해주세요."
+}
