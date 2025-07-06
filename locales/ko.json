@@ -4,12 +4,15 @@
     "message_play_channel": "채널",
     "message_play_length": "영상 길이",
     "message_queue": "플레이리스트",
-    "message_nowplaying": "현재 플레이 중",
-    "message_skip": "음악을 스킵했습니다!",
-    "message_stop": "모든 음악의 재생을 멈춥니다.",
-    "error_no_voice": "음성 채널에 입장한 뒤 명령어를 이용해주세요.",
-    "error_no_joinable": ":x: 음성 채널에 접속할 권한이 없습니다!",
-    "error_no_videoId": "올바른 유튜브 영상 주소가 아닙니다!",
-    "error_no_queue": "현재 재생중인 영상이 없습니다!",
-    "error_no_samechannel": "봇과 같은 음성 채널에서 명령어를 이용해주세요."
+    "message_nowplaying": "플레이 중",
+    "message_skip": "한 곡 건너뛰었어요!",
+    "message_skip_number": "{num} 번째 노래를 건너뛰어드릴게요!",
+    "message_stop": "모든 음악을 멈출게요!",
+    "error_no_voice": "음성 채널에 입장한 뒤 명령어를 이용해주세요!",
+    "error_no_joinable": "😢 음성 채널에 들어갈 권한이 없어요.. 따돌리지 말아주세요!",
+    "error_no_videoId": "올바른 유튜브 영상 주소가 아니에요!",
+    "error_no_queue": "지금 아무 노래도 안 틀고 있어요!",
+    "error_no_samechannel": "저랑 같은 음성 채널에서만 명령어를 사용하실 수 있어요!",
+    "error_no_such_command": "잘 모르는 명령어에요..! 다시 시도해주세요!",
+    "error_while_command": "😵 명령 실행 중 오류가 발생했어요."
 }

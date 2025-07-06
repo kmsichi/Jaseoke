@@ -1,15 +1,18 @@
 {
-    "message_ping": "ポン!",
+    "message_ping": "ポン！",
     "message_play_addsong": "曲を追加しました",
     "message_play_channel": "チャンネル",
-    "message_play_length": "映像の長さ",
+    "message_play_length": "動画の長さ",
     "message_queue": "プレイリスト",
-    "message_nowplaying": "現在プレイ中",
-    "message_skip": "音楽をスキップしました!",
-    "message_stop": "すべての音楽の再生を停止します",
-    "error_no_voice": "音声チャンネルに入場した後、コマンドを利用してください",
-    "error_no_joinable": ":x: 音声チャンネルに接続する権限がありません!",
-    "error_no_videoId": "正しいYouTube動画アドレスではありません!",
-    "error_no_queue": "現在再生中の映像がありません!",
-    "error_no_samechannel": "ボットのような音声チャンネルでコマンドを利用してください。"
+    "message_nowplaying": "再生中",
+    "message_skip": "1曲スキップしました！",
+    "message_skip_number": "{num}番目の曲をスキップします！",
+    "message_stop": "すべての音楽を停止します！",
+    "error_no_voice": "ボイスチャンネルに入ってからコマンドを使ってください！",
+    "error_no_joinable": "😢 ボイスチャンネルに参加する権限がありません…仲間外れにしないでください！",
+    "error_no_videoId": "正しいYouTube動画のURLではありません！",
+    "error_no_queue": "今、曲を再生していません！",
+    "error_no_samechannel": "同じボイスチャンネルでのみコマンドを使えます！",
+    "error_no_such_command": "そのコマンドはわかりません…もう一度試してください！",
+    "error_while_command": "😵 コマンド実行中にエラーが発生しました。"
 }

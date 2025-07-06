@@ -23,6 +23,6 @@ module.exports = {
         const queue = await ServerQueue.get(interaction.guildId);
         queue.songs.length = 1;
         getVoiceConnection(interaction.guildId).state.subscription.player.stop();
-        await interaction.reply({content: await locale.getLanguage(interaction.locale, "message_stop") ?? "music_stop"});
+        await interaction.reply({content: await locale.getLanguage(interaction.locale, "message_stop") ?? "Stop playing all music."});
     }
 }

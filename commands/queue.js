@@ -21,16 +21,16 @@ module.exports = {
     async execute(interaction) {
         const queue = ServerQueue.get(interaction.guildId);
         const lang = interaction.locale;
-        if (!queue) return await interaction.reply({content: await locale.getLanguage(lang, "error_no_queue") ?? "no_queue", flags: MessageFlags.Ephemeral});
+        if (!queue) return await interaction.reply({content: await locale.getLanguage(lang, "error_no_queue") ?? "I'm not playing any music right now!", flags: MessageFlags.Ephemeral});
 
         let titles = "";
-        titles += `**${await locale.getLanguage(lang, "message_nowplaying") ?? "nowPlaying"})** ${queue.songs[0].title} - ${queue.songs[0].author}\n`;
+        titles += `**${await locale.getLanguage(lang, "message_nowplaying") ?? "Now Playing"})** ${queue.songs[0].title} - ${queue.songs[0].author}\n`;
         for (let i = 1; i < queue.songs.length; i++) {
             titles += `${i}) ` + queue.songs[i].title + ` - ${queue.songs[i].author}\n`
         }
         let embed = new EmbedBuilder()
             .setColor("#59DA50")
-            .setTitle(await locale.getLanguage(lang, "message_queue") ?? "currentQueue")
+            .setTitle(await locale.getLanguage(lang, "message_queue") ?? "PlayList")
             .setDescription(titles.replace(undefined, ""));
 
         await interaction.reply({embeds: [embed]});

@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
 const { MessageFlags } = require('discord.js');
+const locale = require("./util/Locale");
 require("dotenv").config();
 
 const client = new Client({ intents: [
@@ -31,17 +32,18 @@ client.on(Events.InteractionCreate, async interaction => {
         const command = interaction.client.commands.get(interaction.commandName);
         if (!command) {
             console.error(`${interaction.commandName} 명령어가 존재하지 않으나, 실행이 시도되었습니다.`);
-            return interaction.reply({content: "존재하지 않는 명령어입니다. 다시 시도해주세요.", flags: MessageFlags.Ephemeral});
+            return interaction.reply({content: await locale.getLanguage(lang, "error_no_such_command") ?? "I don’t recognize that command. Could you try again?", flags: MessageFlags.Ephemeral});
         }
 
         try {
             await command.execute(interaction);
         } catch (err) {
+            let errorMessage = await locale.getLanguage(interaction.locale, "error_while_command") ?? "😵 Oops! Something went wrong while running the command.";
             console.error("명령어 실행 중 에러가 발생했습니다 : " + err);
             if (interaction.replied || interaction.deferred) 
-                await interaction.followUp({content: "명령어 실행 중 오류가 발생했습니다.", flags: MessageFlags.Ephemeral})
+                await interaction.followUp({content: errorMessage, flags: MessageFlags.Ephemeral})
             else
-                await interaction.reply({content: "명령어 실행 중 오류가 발생했습니다.", flags: MessageFlags.Ephemeral})
+                await interaction.reply({content: errorMessage, flags: MessageFlags.Ephemeral})
         }
     }
 })

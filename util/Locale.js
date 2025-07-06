@@ -20,10 +20,14 @@ class Locale {
     }
 
     async getSentence(locale, sentence) {
-        const data = await fs.readFile(`./locales/${locale}.json`, 'utf-8');
-        const json = JSON.parse(data);
+        try {
+            const data = await fs.readFile(`./locales/${locale}.json`, 'utf-8');
+            const json = JSON.parse(data);
 
-        return json[sentence];
+            return json[sentence];
+        } catch (err) {
+            return undefined;
+        }
     }
 }
 

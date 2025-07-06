@@ -30,14 +30,14 @@ module.exports = {
             }),
     async execute(interaction) {
         if (!interaction.member.voice.channel)
-            return await interaction.reply({content: await locale.getLanguage(lang, "error_no_voice") ?? "no_voice", flags: MessageFlags.Ephemeral});
+            return await interaction.reply({content: await locale.getLanguage(lang, "error_no_voice") ?? "Please join the voice channel before using the command.", flags: MessageFlags.Ephemeral});
         let serverQueue = queue.get(interaction.guildId);
         if (!serverQueue || serverQueue.songs.length === 0)
-            return await interaction.reply({content: await locale.getLanguage(lang, "error_no_queue") ?? "no_queue", MessageFlags: MessageFlags.Ephemeral});
+            return await interaction.reply({content: await locale.getLanguage(lang, "error_no_queue") ?? "PlayList", MessageFlags: MessageFlags.Ephemeral});
         if (interaction.member.voice.channel !== interaction.guild.members.me.voice.channel)
-            return await interaction.reply({content: await locale.getLanguage(lang, "error_no_samechannel") ?? "not_samechannel", flags: MessageFlags.Ephemeral});
+            return await interaction.reply({content: await locale.getLanguage(lang, "error_no_samechannel") ?? "Please make sure you’re in the same voice channel when using commands!", flags: MessageFlags.Ephemeral});
         
         getVoiceConnection(interaction.guildId).state.subscription.player.stop();
-        return await interaction.reply(await locale.getLanguage(lang, "message_skip") ?? "musicSkipped")
+        return await interaction.reply(await locale.getLanguage(lang, "message_skip") ?? "Music Skipped!")
     }
 }
