@@ -23,7 +23,7 @@ const rest = new REST().setToken(discordToken);
 		console.log(`[자석이] ${commands.length} 개 명령어를 새로고침 합니다..`);
 
 		const data = await rest.put(
-			Routes.applicationCommands(clientId),
+			Routes.applicationGuildCommands(clientId, guildId),
 			{ body: commands },
 		);
 

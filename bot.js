@@ -1,10 +1,9 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
-const { clientId, discordToken } = require('./config.json');
-const { REST, Routes, Message, MessageFlags } = require('discord.js');
-const { error } = require('node:console');
-const { } = require("./deployCommand.js");
+const { discordToken } = require('./config.json');
+const { MessageFlags } = require('discord.js');
+require("./deployTestCommand.js");
 
 const client = new Client({ intents: [
         GatewayIntentBits.Guilds,
@@ -30,11 +29,10 @@ client.once(Events.ClientReady, readyClient => {
 
 client.on(Events.InteractionCreate, async interaction => {
     if (interaction.isChatInputCommand()) {
-
         const command = interaction.client.commands.get(interaction.commandName);
         if (!command) {
             console.error(`${interaction.commandName} 명령어가 존재하지 않으나, 실행이 시도되었습니다.`);
-            return;
+            return interaction.reply({content: "존재하지 않는 명령어입니다. 다시 시도해주세요.", flags: MessageFlags.Ephemeral});
         }
 
         try {
