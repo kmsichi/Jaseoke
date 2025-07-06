@@ -1,7 +1,7 @@
 const { REST, Routes } = require('discord.js');
-const { clientId, guildId, discordToken } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
+require("dotenv").config();
 
 const commands = [];
 
@@ -16,14 +16,14 @@ for (const file of commandFiles) {
     }
 }
 
-const rest = new REST().setToken(discordToken);
+const rest = new REST().setToken(process.env.DISCORD_BOT_TOKEN);
 
 (async () => {
 	try {
 		console.log(`[자석이] ${commands.length} 개 명령어를 새로고침 합니다..`);
 
 		const data = await rest.put(
-			Routes.applicationCommands(clientId),
+			Routes.applicationCommands(process.env.DISCORD_CLIENT_ID),
 			{ body: commands },
 		);
 

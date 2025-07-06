@@ -16,14 +16,14 @@ for (const file of commandFiles) {
     }
 }
 
-const rest = new REST().setToken(discordToken);
+const rest = new REST().setToken(process.env.DISCORD_BOT_TOKEN);
 
 (async () => {
 	try {
 		console.log(`[자석이] ${commands.length} 개 명령어를 새로고침 합니다..`);
 
 		const data = await rest.put(
-			Routes.applicationGuildCommands(clientId, guildId),
+			Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID, process.env.DISCORD_GUILD_ID),
 			{ body: commands },
 		);
 
