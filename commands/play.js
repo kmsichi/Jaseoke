@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, MessageFlags, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, MessageFlags, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionCollector } = require("discord.js");
 const { joinVoiceChannel } = require("@discordjs/voice");
 const MusicPlayer = require("../music/MusicPlayer.js");
 const { getYoutubeVideoInfo, searchYoutubeVideo } = require("../util/YoutubeInfo.js");
@@ -36,7 +36,8 @@ module.exports = {
                 "zh-CN": "要播放的视频的URL",
                 "zh-TW": "要播放的視頻的URL",
             })
-            .setRequired(true)),
+            .setRequired(true)
+        ),
     async execute(interaction) {
         const lang = interaction.locale;
         if (!interaction.member.voice.channel)
@@ -51,15 +52,15 @@ module.exports = {
         const pattern = new RegExp("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*");
         let videoId = word.match(pattern);
 
-        if (!videoId || !videoId[1]) {
-            videoDetails = await searchYoutubeVideo(word);
-            return await interaction.reply({content: await locale.getLanguage(lang, "error_no_videoId") ?? "Hmm, looks like that's not a vaild Youtube Video URL!", flags: MessageFlags.Ephemeral});
-        } else {
-            videoDetails = await getYoutubeVideoInfo(word);
-            videoId = videoId[1];
-        }
+        interaction.deferReply();
 
-        if (!videoDetails) return await interaction.reply({content: await locale.getLanguage(lang, "error_no_videoId") ?? "Hmm, looks like that's not a vaild Youtube Video URL!", flags: MessageFlags.Ephemeral})
+        if (!videoId || !videoId[1]) 
+            videoId = await waitForSelection(word, interaction);
+        else 
+            videoId = videoId[1];
+
+        videoDetails = await getYoutubeVideoInfo(videoId);
+        if (!videoDetails) return await interaction.editReply({content: await locale.getLanguage(lang, "error_no_videoId") ?? "Hmm, looks like that's not a vaild Youtube Video URL!", flags: MessageFlags.Ephemeral})
 
         joinVoiceChannel({
             channelId: interaction.member.voice.channelId,
@@ -87,7 +88,60 @@ module.exports = {
             .addFields(
                 {name: `${await locale.getLanguage(lang, "message_play_channel") ?? "Channel"}`, value: song.channel, inline: true},
                 {name: `${await locale.getLanguage(lang, "message_play_length") ?? "Video length"}`, value: song.length, inline: true}
-            )
-        await interaction.reply({embeds: [embed]});
+            );
+        await interaction.editReply({embeds: [embed], components: []});
     }
+}
+
+async function waitForSelection(word, interaction) {
+    let items = await searchYoutubeVideo(word, 5);
+    let description = `총 ${items.length} 개의 검색 결과가 있어요 : \n`;
+    for (i=0; i<items.length; i++) 
+        description += `${i+1}] ${items[i].snippet.title}\n`;
+    const row = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder()
+                .setCustomId("1")
+                .setLabel("1")
+                .setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder()
+                .setCustomId("2")
+                .setLabel("2")
+                .setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder()
+                .setCustomId("3")
+                .setLabel("3")
+                .setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder()
+                .setCustomId("4")
+                .setLabel("4")
+                .setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder()
+                .setCustomId("5")
+                .setLabel("5")
+                .setStyle(ButtonStyle.Secondary)
+        );
+
+    let embed = new EmbedBuilder()
+        .setTitle("어떤 곡을 추가할까요?")
+        .setDescription(description);
+
+    const message = await interaction.editReply({embeds: [embed], components: [row]});
+    return new Promise((resolve, reject) => {
+        const collector = new InteractionCollector(interaction.client, {
+            message: message,
+            filter: i => i.user.id == interaction.user.id,
+            time: 30000
+        });
+    
+        collector.on("collect", async interaction => {
+            resolve(items[parseInt(interaction.customId-1)].id.videoId);
+            collector.stop("done");
+        })
+    
+        collector.on("end", (collected, reason) => {
+            if (reason !== "done")
+                interaction.deleteReply();
+        })
+    })
 }
