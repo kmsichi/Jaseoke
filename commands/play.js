@@ -95,7 +95,8 @@ module.exports = {
 
 async function waitForSelection(word, interaction) {
     let items = await searchYoutubeVideo(word, 5);
-    let description = `총 ${items.length} 개의 검색 결과가 있어요 : \n`;
+    let description = `${await locale.getLanguage(interaction.locale, "message_play_select_description") ?? "There are a total of [count] search results :"}\n`;
+    description = description.replace("[count]", items.length);
     for (i=0; i<items.length; i++) 
         description += `${i+1}] ${items[i].snippet.title}\n`;
     const row = new ActionRowBuilder()
@@ -123,10 +124,10 @@ async function waitForSelection(word, interaction) {
         );
 
     let embed = new EmbedBuilder()
-        .setTitle("어떤 곡을 추가할까요?")
+        .setTitle(await locale.getLanguage(interaction.locale, "message_play_select_title") ?? "Which song would you like to add?")
         .setDescription(description);
-
     const message = await interaction.editReply({embeds: [embed], components: [row]});
+
     return new Promise((resolve, reject) => {
         const collector = new InteractionCollector(interaction.client, {
             message: message,
@@ -140,8 +141,9 @@ async function waitForSelection(word, interaction) {
         })
     
         collector.on("end", (collected, reason) => {
-            if (reason !== "done")
-                interaction.deleteReply();
+            if (reason !== "done") {
+                interaction.deleteReply().catch(() => {});
+            }
         })
     })
 }

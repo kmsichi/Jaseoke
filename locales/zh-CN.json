@@ -3,6 +3,8 @@
     "message_play_addsong": "已添加歌曲",
     "message_play_channel": "频道",
     "message_play_length": "视频时长",
+    "message_play_select_title": "總共有[count]個搜尋結果?",
+    "message_play_select_description": "总共有[count]个搜索结果：",
     "message_queue": "播放列表",
     "message_nowplaying": "正在播放",
     "message_skip": "已跳过一首歌！",

@@ -3,6 +3,8 @@
     "message_play_addsong": "曲を追加しました",
     "message_play_channel": "チャンネル",
     "message_play_length": "動画の長さ",
+    "message_play_select_title": "どの曲を追加しますか?",
+    "message_play_select_description": "合計[count]件の検索結果があります :",
     "message_queue": "プレイリスト",
     "message_nowplaying": "再生中",
     "message_skip": "1曲スキップしました！",

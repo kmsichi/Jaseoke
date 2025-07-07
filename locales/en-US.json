@@ -3,6 +3,8 @@
     "message_play_addsong": "Song Added",
     "message_play_channel": "Channel",
     "message_play_length": "Video length",
+    "message_play_select_title": "Which song would you like to add?",
+    "message_play_select_description": "There are a total of [count] search results :",
     "message_queue": "PlayList",
     "message_nowplaying": "Now Playing",
     "message_skip": "Music Skipped!",

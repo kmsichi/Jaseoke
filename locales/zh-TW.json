@@ -3,6 +3,8 @@
     "message_play_addsong": "已新增歌曲",
     "message_play_channel": "頻道",
     "message_play_length": "影片長度",
+    "message_play_select_title": "要添加哪首歌?",
+    "message_play_select_description": "總共有[count]個搜尋結果：",
     "message_queue": "播放清單",
     "message_nowplaying": "正在播放",
     "message_skip": "已跳過一首歌！",
