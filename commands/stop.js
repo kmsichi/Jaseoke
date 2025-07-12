@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const ServerQueue = require("../music/ServerQueue");
 const { getVoiceConnection } = require("@discordjs/voice");
 const locale = require("../util/Locale");
@@ -20,11 +20,12 @@ module.exports = {
             "zh-TW": "停止所有播放的音樂",
         }),
     async execute(interaction) {
+        const lang = interaction.locale;
         if (!interaction.member.voice.channel)
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_voice") ?? "Please join the voice channel before using the command.", flags: MessageFlags.Ephemeral});
         const queue = await ServerQueue.get(interaction.guildId);
         if (!queue || queue.songs.length === 0)
-            return await interaction.reply({content: await locale.getLanguage(lang, "error_no_queue") ?? "PlayList", MessageFlags: MessageFlags.Ephemeral});
+            return await interaction.reply({content: await locale.getLanguage(lang, "error_no_queue") ?? "PlayList", flags: MessageFlags.Ephemeral});
         if (interaction.member.voice.channel !== interaction.guild.members.me.voice.channel)
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_samechannel") ?? "Please make sure you’re in the same voice channel when using commands!", flags: MessageFlags.Ephemeral});
         queue.songs.length = 1;
