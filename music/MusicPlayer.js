@@ -1,9 +1,10 @@
 const { spawn } = require("child_process");
 const { createAudioPlayer, createAudioResource, AudioPlayerStatus, getVoiceConnection } = require('@discordjs/voice');
 const ServerQueue = require("./ServerQueue.js");
+const MusicChannel = require("./MusicChannel.js");
 
 class MusicPlayer {
-    async addsong(guildId, song) {
+    addsong(guildId, song) {
         if (!ServerQueue.has(guildId)) {
             let guildQueue = {
                 songs: [],
@@ -21,7 +22,7 @@ class MusicPlayer {
         }
     }
 
-    async play(guildId) {
+    play(guildId) {
         const queue = ServerQueue.get(guildId);
         if (!queue) throw "에러 발생, queue가 존재하지 않습니다.";
         const ytDlpProcess = spawn("yt-dlp", [
@@ -37,10 +38,18 @@ class MusicPlayer {
         
         connection.subscribe(audioPlayer);
         audioPlayer.play(resource);
+        MusicChannel.update(guildId);
 
         audioPlayer.on(AudioPlayerStatus.Idle, () => {
-            queue.songs.shift();
             ytDlpProcess.kill();
+
+            if (queue.loop === 2)
+                queue.songs.unshift(queue.songs[0]);
+            else if (queue.loop === 1) 
+                queue.songs.push(queue.songs[0]);
+
+            queue.songs.shift();
+
             if (queue.songs.length === 0) {
                 connection.destroy();
                 ServerQueue.delete(guildId); // queue 접근 불가

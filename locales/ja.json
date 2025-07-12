@@ -10,11 +10,18 @@
     "message_skip": "1曲スキップしました！",
     "message_skip_number": "{num}番目の曲をスキップします！",
     "message_stop": "すべての音楽を停止します！",
+    "message_setup": "音楽コントロールチャンネルを作成しました！\n [channel]をご利用ください！",
+    "message_repeat_mode_0": "音楽をリピートしません！",
+    "message_repeat_mode_1": "プレイリストをリピート再生します！",
+    "message_repeat_mode_2": "この曲だけをリピート再生します！",
     "error_no_voice": "ボイスチャンネルに入ってからコマンドを使ってください！",
     "error_no_joinable": "😢 ボイスチャンネルに参加する権限がありません…仲間外れにしないでください！",
     "error_no_videoId": "正しいYouTube動画のURLではありません！",
     "error_no_queue": "今、曲を再生していません！",
     "error_no_samechannel": "同じボイスチャンネルでのみコマンドを使えます！",
     "error_no_such_command": "そのコマンドはわかりません…もう一度試してください！",
-    "error_while_command": "😵 コマンド実行中にエラーが発生しました。"
+    "error_while_command": "😵 コマンド実行中にエラーが発生しました",
+    "error_no_permission_manageChannel": "このコマンドを実行するには「チャンネル管理」の権限が必要です！",
+    "error_has_musicChannel": "すでにチャンネルが存在します！[channel]をご利用ください！",
+    "error_no_setup": "音楽を停止してからコマンドを実行してください！"
 }

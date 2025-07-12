@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const { getVoiceConnection } = require("@discordjs/voice");
 const ServerQueue = require("../music/ServerQueue.js");
 const locale = require("../util/Locale");
+const MusicChannel = require('../music/MusicChannel.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -37,6 +38,7 @@ module.exports = {
             connection.state.subscription.player.pause();
         queue.pause == true ? await interaction.reply("음악을 다시 재생했습니다!") : await interaction.reply("음악을 일시정지했습니다!")
         queue.pause = !queue.pause;
+        await MusicChannel.update(interaction.guildId);
         return;
     }
 }

@@ -9,11 +9,18 @@
     "message_nowplaying": "Now Playing",
     "message_skip": "Music Skipped!",
     "message_stop": "Stop playing all music.",
+    "message_setup": "The music control channel has been created!\n Please use [channel]!",
+    "message_repeat_mode_0": "I won't repeat the music!",
+    "message_repeat_mode_1": "I will repeat the playlist!",
+    "message_repeat_mode_2": "I will repeat this one song!",
     "error_no_voice": "Please join the voice channel before using the command.",
     "error_no_joinable": "😢 I can't join the voice channel—please don't ignore me!",
     "error_no_videoId": "Hmm, looks like that's not a vaild Youtube Video URL!",
     "error_no_queue": "I'm not playing any music right now!",
     "error_no_samechannel": "Please make sure you’re in the same voice channel when using commands!",
     "error_no_such_command": "I don’t recognize that command. Could you try again?",
-    "error_while_command": "😵 Oops! Something went wrong while running the command."
+    "error_while_command": "😵 Oops! Something went wrong while running the command.",
+    "error_no_permission_manageChannel": "You need the ``Manage Channels`` permission to run this command!",
+    "error_has_musicChannel": "A channel already exists! Please use [channel]!",
+    "error_no_setup": "Please stop the music before using this command!"
 }

@@ -3,6 +3,7 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
 const { MessageFlags } = require('discord.js');
 const locale = require("./util/Locale");
+const MusicChannel = require('./music/MusicChannel');
 require("dotenv").config();
 
 const client = new Client({ intents: [
@@ -12,6 +13,7 @@ const client = new Client({ intents: [
 });
 
 client.commands = new Collection();
+MusicChannel.setclient(client);
 
 const commandFiles = fs.readdirSync(path.join(__dirname, "commands")).filter(f => f.endsWith('js'));
 for (const file of commandFiles) {
@@ -45,6 +47,27 @@ client.on(Events.InteractionCreate, async interaction => {
             else
                 await interaction.reply({content: errorMessage, flags: MessageFlags.Ephemeral})
         }
+    } else if (interaction.isButton()) {
+        const command = interaction.client.commands.get(interaction.customId);
+        if (command) 
+            try {
+                await command.execute(interaction);
+                setTimeout(async () => {
+                    try {
+                        const reply = await interaction.fetchReply();
+                        await reply.delete();
+                    } catch (err) {
+                        console.error("메시지 삭제 실패:", err);
+                    }
+                }, 10000);
+            } catch (err) {
+                let errorMessage = await locale.getLanguage(interaction.locale, "error_while_command") ?? "😵 Oops! Something went wrong while running the command.";
+                console.error("명령어 실행 중 에러가 발생했습니다 : " + err);
+                if (interaction.replied || interaction.deferred) 
+                    await interaction.followUp({content: errorMessage, flags: MessageFlags.Ephemeral})
+                else
+                    await interaction.reply({content: errorMessage, flags: MessageFlags.Ephemeral})
+            }
     }
 })
 

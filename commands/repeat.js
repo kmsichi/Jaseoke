@@ -30,6 +30,7 @@ module.exports = {
         
         queue.loop = (queue.loop + 1) % 3;
         const msg = await locale.getLanguage(interaction.locale, `message_repeat_mode_${queue.loop}`) ?? "Repeat_Mode_Set";
+        await MusicChannel.update(interaction.guildId);
         await interaction.reply({content: msg});
         return;
     }
