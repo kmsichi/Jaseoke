@@ -28,6 +28,7 @@ module.exports = {
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_queue") ?? "PlayList", flags: MessageFlags.Ephemeral});
         if (interaction.member.voice.channel !== interaction.guild.members.me.voice.channel)
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_samechannel") ?? "Please make sure you’re in the same voice channel when using commands!", flags: MessageFlags.Ephemeral});
+        queue.loop = 0;
         queue.songs.length = 1;
         getVoiceConnection(interaction.guildId).state.subscription.player.stop();
         await interaction.reply({content: await locale.getLanguage(interaction.locale, "message_stop") ?? "Stop playing all music."});

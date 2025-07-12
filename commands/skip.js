@@ -38,7 +38,10 @@ module.exports = {
         if (interaction.member.voice.channel !== interaction.guild.members.me.voice.channel)
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_samechannel") ?? "Please make sure you’re in the same voice channel when using commands!", flags: MessageFlags.Ephemeral});
         
+        let temp = queue.loop;
+        queue.loop = 0;        
         getVoiceConnection(interaction.guildId).state.subscription.player.stop();
-        return await interaction.reply(await locale.getLanguage(lang, "message_skip") ?? "Music Skipped!")
+        queue.loop = temp;
+        return await interaction.reply(await locale.getLanguage(lang, "message_skip") ?? "Music Skipped!");
     }
 }
