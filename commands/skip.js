@@ -29,6 +29,7 @@ module.exports = {
                 "zh-TW": "跳過的數字",
             }),
     async execute(interaction) {
+        const lang = interaction.locale;
         if (!interaction.member.voice.channel)
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_voice") ?? "Please join the voice channel before using the command.", flags: MessageFlags.Ephemeral});
         let queue = ServerQueue.get(interaction.guildId);
