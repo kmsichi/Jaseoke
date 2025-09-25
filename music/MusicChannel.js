@@ -5,7 +5,7 @@ class MusicChannel {
     guildChannel = new Map();
     client = undefined;
 
-    setclient(c) {
+    setClient(c) {
         this.client = c;
     }
 

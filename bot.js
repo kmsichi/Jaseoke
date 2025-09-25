@@ -13,7 +13,7 @@ const client = new Client({ intents: [
 });
 
 client.commands = new Collection();
-MusicChannel.setclient(client);
+MusicChannel.setClient(client);
 
 const commandFiles = fs.readdirSync(path.join(__dirname, "commands")).filter(f => f.endsWith('js'));
 for (const file of commandFiles) {
