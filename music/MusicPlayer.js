@@ -1,5 +1,5 @@
-const { spawn } = require("child_process");
-const { createAudioPlayer, createAudioResource, AudioPlayerStatus, getVoiceConnection } = require('@discordjs/voice');
+const { spawn, execSync } = require("child_process");
+const { createAudioPlayer, createAudioResource, AudioPlayerStatus, getVoiceConnection, StreamType } = require('@discordjs/voice');
 const ServerQueue = require("./ServerQueue.js");
 const MusicChannel = require("./MusicChannel.js");
 
@@ -25,14 +25,20 @@ class MusicPlayer {
     play(guildId) {
         const queue = ServerQueue.get(guildId);
         if (!queue) throw "에러 발생, queue가 존재하지 않습니다.";
-        const ytDlpProcess = spawn("yt-dlp", [
-            "-f", "bestaudio",
-            "-o", "-",
-            "--no-playlist",
-            queue.songs[0].url
-        ]);
 
-        const resource = createAudioResource(ytDlpProcess.stdout, {inlineVolume: true});
+        const streamUrl = execSync(`yt-dlp -f bestaudio --get-url ${queue.songs[0].url}`).toString().trim();
+        const ffmpeg = spawn("ffmpeg", [
+            "-re",
+            '-analyzeduration', '0',
+            '-loglevel', '0',
+            "-i", streamUrl,
+            "-f", "s16le",
+            "-ar", "48000",
+            "-ac", "2",
+            "pipe:1"
+        ], { stdio: ['ignore', 'pipe', 'ignore'] });
+
+        const resource = createAudioResource(ffmpeg.stdout, {inputType: StreamType.Raw, inlineVolume: true});
         const audioPlayer = createAudioPlayer();
         const connection = getVoiceConnection(guildId);
         
@@ -41,7 +47,7 @@ class MusicPlayer {
         MusicChannel.update(guildId);
 
         audioPlayer.on(AudioPlayerStatus.Idle, () => {
-            ytDlpProcess.kill();
+            ffmpeg.kill();
 
             if (queue.loop === 2)
                 queue.songs.unshift(queue.songs[0]);
