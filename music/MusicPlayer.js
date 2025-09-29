@@ -52,7 +52,9 @@ class MusicPlayer {
 
             if (queue.songs.length === 0) {
                 connection.destroy();
-                ServerQueue.delete(guildId); // queue 접근 불가
+                MusicChannel.update(guildId).then(() => {
+                    ServerQueue.delete(guildId); // queue 접근 불가
+                });
             }
             else this.play(guildId);
         });
