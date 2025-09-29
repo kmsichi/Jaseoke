@@ -4,6 +4,7 @@ const MusicPlayer = require("../music/MusicPlayer.js");
 const { getYoutubeVideoInfo, searchYoutubeVideo } = require("../util/YoutubeInfo.js");
 const { secondsToString } = require("../util/SecondsToString.js");
 const locale = require("../util/Locale");
+const MessageWrapper = require("../util/MessageWrapper");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -45,22 +46,24 @@ module.exports = {
         if (!interaction.member.voice.channel.joinable) 
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_joinable") ?? "😢 I can't join the voice channel—please don't ignore me!", flags: MessageFlags.Ephemeral});
 
-        let word = interaction.options.getString(`searchword`);
+        let word = interaction.content ?? interaction.options.getString(`searchword`);
         let videoDetails = undefined;
 
         // 유튜브 영상만을 처리
         const pattern = new RegExp("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*");
         let videoId = word.match(pattern);
 
-        interaction.deferReply();
+        let msg = new MessageWrapper();
+        await msg.deferReply(interaction);
 
         if (!videoId || !videoId[1]) 
-            videoId = await waitForSelection(word, interaction);
+            videoId = await waitForSelection(word, interaction, msg);
         else 
             videoId = videoId[1];
 
         videoDetails = await getYoutubeVideoInfo(videoId);
-        if (!videoDetails) return await interaction.editReply({content: await locale.getLanguage(lang, "error_no_videoId") ?? "Hmm, looks like that's not a vaild Youtube Video URL!", flags: MessageFlags.Ephemeral})
+        if (!videoDetails)
+            return await msg.edit(interaction, {content: await locale.getLanguage(lang, "error_no_videoId") ?? "Hmm, looks like that's not a vaild Youtube Video URL!", flags: MessageFlags.Ephemeral});
 
         joinVoiceChannel({
             channelId: interaction.member.voice.channelId,
@@ -89,11 +92,11 @@ module.exports = {
                 {name: `${await locale.getLanguage(lang, "message_play_channel") ?? "Channel"}`, value: song.channel, inline: true},
                 {name: `${await locale.getLanguage(lang, "message_play_length") ?? "Video length"}`, value: song.length, inline: true}
             );
-        await interaction.editReply({embeds: [embed], components: []});
+        await msg.edit(interaction, {embeds: [embed], components: []});
     }
 }
 
-async function waitForSelection(word, interaction) {
+async function waitForSelection(word, interaction, msg) {
     let items = await searchYoutubeVideo(word, 5);
     let description = `${await locale.getLanguage(interaction.locale, "message_play_select_description") ?? "There are a total of [count] search results :"}\n`;
     description = description.replace("[count]", items.length);
@@ -126,12 +129,12 @@ async function waitForSelection(word, interaction) {
     let embed = new EmbedBuilder()
         .setTitle(await locale.getLanguage(interaction.locale, "message_play_select_title") ?? "Which song would you like to add?")
         .setDescription(description);
-    const message = await interaction.editReply({embeds: [embed], components: [row]});
+    const message = await msg.edit(interaction, {content: "", embeds: [embed], components: [row]});
 
     return new Promise((resolve, reject) => {
         const collector = new InteractionCollector(interaction.client, {
             message: message,
-            filter: i => i.user.id == interaction.user.id,
+            filter: i => i.user.id ?? i.member.user.id == interaction.user.id,
             time: 30000
         });
     
@@ -142,7 +145,7 @@ async function waitForSelection(word, interaction) {
     
         collector.on("end", (collected, reason) => {
             if (reason !== "done") {
-                interaction.deleteReply().catch(() => {});
+                interaction.deleteReply?.().catch(() => {});
             }
         })
     })

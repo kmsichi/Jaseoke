@@ -9,7 +9,9 @@ require("dotenv").config();
 
 const client = new Client({ intents: [
         GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildVoiceStates
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMessages
     ]
 });
 
@@ -71,6 +73,20 @@ client.on(Events.InteractionCreate, async interaction => {
                 else
                     await interaction.reply({content: errorMessage, flags: MessageFlags.Ephemeral})
             }
+    }
+});
+
+client.on(Events.MessageCreate, async message => {
+    if (!message.inGuild()) return;
+    let channelId = await MusicChannel.check(message.guildId);
+    if (message.channelId == channelId) {
+        if (!message.member.user.bot) {
+            const cmd = client.commands.get("play");
+            cmd.execute(message);
+        }
+        setTimeout(() => {
+            message.delete().catch(() => null);
+        }, 10000)
     }
 });
 

@@ -74,8 +74,8 @@ module.exports = {
         const description = "# 플레이리스트:\n현재 플레이리스트가 비어있어요!"
         const message = await channel.send({content: description, embeds: [embed], components: [row]});
 
-        MusicChannel.register(interaction.guildId, channel.id, message.id);
         const msg = await locale.getLanguage(lang, "message_setup") ?? "Channel_Created";
         await interaction.reply({content: msg.replace("[channel]", `<#${channel.id}>`)});
+        MusicChannel.register(interaction.guildId, channel.id, message.id);
     }
 }
