@@ -20,6 +20,7 @@ module.exports = {
             "zh-TW": "就會說是乓",
         }),
     async execute(interaction) {
+        const lang = interaction.locale;
         if (!interaction.member.voice.channel)
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_voice") ?? "Please join the voice channel before using the command.", flags: MessageFlags.Ephemeral});
         const queue = ServerQueue.get(interaction.guildId);
