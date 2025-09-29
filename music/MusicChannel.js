@@ -1,5 +1,6 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const ServerQueue = require("./ServerQueue");
+const Database = require("../util/Database");
 
 class MusicChannel {
     guildChannel = new Map();
@@ -9,35 +10,46 @@ class MusicChannel {
         this.client = c;
     }
 
-    register(guildId, channelId, messageId) {
+    async register(guildId, channelId, messageId) {
         this.guildChannel.set(guildId, {
             channelId: channelId,
             messageId: messageId
         });
+
+        const db = new Database();
+        await db.save(guildId, channelId, messageId);
+        db.close();
     }
 
-    get(guildId) {
-        return this.guildChannel.get(guildId);
+    async get(guildId) {
+        let db = new Database();
+        let tempData = this.guildChannel.get(guildId) ?? await db.get(guildId);
+        db.close();
+
+        return tempData;
     }
 
     async check(guildId) {
-        const tempData = this.guildChannel.get(guildId);
-        if (tempData) {
-            const channel = await this.client.channels.fetch(tempData.channelId).catch(() => null);
-            const message = await channel?.messages.fetch(tempData.messageId).catch(() => null);
-            return !!message;
-        }
-        return false;
+        let tempData = await this.get(guildId);
+
+        const channel = await this.client.channels.fetch(tempData?.channelId).catch(() => null);
+        const message = await channel?.messages.fetch(tempData?.messageId).catch(() => null);
+        let messageId = message?.id;
+
+        if (tempData && !message)
+            this.delete(guildId);
+    
+        return messageId ? channel.id : false; 
     }
 
     async update(guildId) {
-        const tempData = this.guildChannel.get(guildId);
+        const tempData = await this.get(guildId);
         if (tempData) {
             const channel = await this.client.channels.fetch(tempData.channelId).catch(() => null);;
             const message = await channel?.messages.fetch(tempData.messageId).catch(() => null);;
 
             if (!message) 
-                return this.guildChannel.delete(guildId);
+                return this.delete(guildId);
 
             let imageURLs = [
                 "https://cdn.discordapp.com/attachments/346499577446400000/1393590906585612349/20240215_131944.jpg?ex=6873ba2b&is=687268ab&hm=c8f2659a411f0886c9e5ff0e4d6267ff66e174ec399c90b6275e321dcaa0267d&",
@@ -95,6 +107,13 @@ class MusicChannel {
                 .setFooter({text: footer || null});
             await message.edit({embeds: [embed], content: description, components: [row]});
         }
+    }
+
+    async delete(guildId) {
+        this.guildChannel.delete(guildId);
+        const db = new Database();
+        await db.delete(guildId);
+        db.close();
     }
 }
 

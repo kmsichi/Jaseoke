@@ -4,6 +4,7 @@ const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
 const { MessageFlags } = require('discord.js');
 const locale = require("./util/Locale");
 const MusicChannel = require('./music/MusicChannel');
+const Database = require('./util/Database.js');
 require("dotenv").config();
 
 const client = new Client({ intents: [
@@ -21,11 +22,13 @@ for (const file of commandFiles) {
     if ('data' in command && 'execute' in command) {
         client.commands.set(command.data.name, command);
     } else {
-        console.log(`[경고] ${filePath} 명령어가 제대로 설정되지 않았습니다.`);
+        console.error(`[경고] ${filePath} 명령어가 제대로 설정되지 않았습니다.`);
     }
 }
 
 client.once(Events.ClientReady, readyClient => {
+    let db = new Database();
+    db.init();
     console.log(`[자석이] ${readyClient.user.tag}, 온라인!`);
 })
 
@@ -69,6 +72,6 @@ client.on(Events.InteractionCreate, async interaction => {
                     await interaction.reply({content: errorMessage, flags: MessageFlags.Ephemeral})
             }
     }
-})
+});
 
 client.login(process.env.DISCORD_BOT_TOKEN);

@@ -23,13 +23,15 @@ module.exports = {
         const lang = interaction.locale;
         if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageChannels)) 
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_permission_manageChannel") ?? "You need the ``Manage Channels`` permission to run this command!", flags: MessageFlags.Ephemeral});
-        if (await MusicChannel.check(interaction.guildId, interaction.client)) {
-            const errorMsg = await locale.getLanguage(lang, "error_has_musicChannel") ?? "Alreay_Has_Channel";
-            return await interaction.reply({content: errorMsg, flags: MessageFlags.Ephemeral})
-        }
-        const queue = ServerQueue.get(interaction.guildId);
+                const queue = ServerQueue.get(interaction.guildId);
         if (queue)
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_setup") ?? "Please stop the music before using this command!", flags: MessageFlags.Ephemeral})
+        
+        let channelId = await MusicChannel.check(interaction.guildId, interaction.client);
+        if (!!channelId) {
+            const errorMsg = await locale.getLanguage(lang, "error_has_musicChannel") ?? "Alreay_Has_Channel";
+            return await interaction.reply({content: errorMsg.replace("[channel]", `<#${channelId}>`), flags: MessageFlags.Ephemeral})
+        }
 
         const channel = await interaction.guild.channels.create({
             name: "자석이-노래-신청",
