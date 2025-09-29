@@ -57,14 +57,6 @@ client.on(Events.InteractionCreate, async interaction => {
         if (command) 
             try {
                 await command.execute(interaction);
-                setTimeout(async () => {
-                    try {
-                        const reply = await interaction.fetchReply();
-                        await reply.delete();
-                    } catch (err) {
-                        console.error("메시지 삭제 실패:", err);
-                    }
-                }, 10000);
             } catch (err) {
                 let errorMessage = await locale.getLanguage(interaction.locale, "error_while_command") ?? "😵 Oops! Something went wrong while running the command.";
                 console.error("명령어 실행 중 에러가 발생했습니다 : " + err);
