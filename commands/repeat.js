@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { MessageFlags, SlashCommandBuilder } = require('discord.js');
 const locale = require("../util/Locale");
 const ServerQueue = require('../music/ServerQueue');
 const MusicChannel = require('../music/MusicChannel');
