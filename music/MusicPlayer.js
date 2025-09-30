@@ -26,44 +26,72 @@ class MusicPlayer {
         const queue = ServerQueue.get(guildId);
         if (!queue) throw "에러 발생, queue가 존재하지 않습니다.";
 
-        const streamUrl = execSync(`yt-dlp -f bestaudio --get-url ${queue.songs[0].url}`).toString().trim();
-        const ffmpeg = spawn("ffmpeg", [
-            "-re",
-            '-analyzeduration', '0',
-            '-loglevel', '0',
-            "-i", streamUrl,
-            "-f", "s16le",
-            "-ar", "48000",
-            "-ac", "2",
-            "pipe:1"
-        ], { stdio: ['ignore', 'pipe', 'ignore'] });
+        try {
+            const streamUrl = execSync(`yt-dlp -f bestaudio --get-url --hls-use-mpegts ${queue.songs[0].url}`, {encoding: "utf-8"}).trim();
+            const ffmpeg = spawn("ffmpeg", [
+                "-re",
+                "-analyzeduration", "0",
+                "-loglevel", "0",
+                "-i", streamUrl,
+                "-f", "s16le",
+                "-ar", "48000",
+                "-ac", "2",
+                "-fflags", "+nobuffer",
+                "-flags", "low_delay",
+                "-flush_packets", 0,
+                "-reconnect", "1",
+                "-reconnect_streamed", "1",
+                "-reconnect_delay_max", "5",
+                "pipe:1"
+            ], { stdio: ['ignore', 'pipe', "pipe"] });
 
-        const resource = createAudioResource(ffmpeg.stdout, {inputType: StreamType.Raw, inlineVolume: true});
-        const audioPlayer = createAudioPlayer();
-        const connection = getVoiceConnection(guildId);
-        
-        connection.subscribe(audioPlayer);
-        audioPlayer.play(resource);
-        MusicChannel.update(guildId);
+            const resource = createAudioResource(ffmpeg.stdout, {inputType: StreamType.Raw, inlineVolume: true});
+            const audioPlayer = createAudioPlayer();
+            const connection = getVoiceConnection(guildId);
+            
+            connection.subscribe(audioPlayer);
+            audioPlayer.play(resource);
+            MusicChannel.update(guildId);
 
-        audioPlayer.on(AudioPlayerStatus.Idle, () => {
-            ffmpeg.kill();
+            ffmpeg.stderr.on("data", data => {
+                console.log("[ffmpeg]", data.toString());
+            });
 
-            if (queue.loop === 2)
-                queue.songs.unshift(queue.songs[0]);
-            else if (queue.loop === 1) 
-                queue.songs.push(queue.songs[0]);
+            ffmpeg.on("close", code => {
+                console.log("ffmpeg 종료 코드:", code);
+            });
 
+            audioPlayer.on(AudioPlayerStatus.Idle, () => {
+                ffmpeg.kill();
+
+                if (queue.loop === 2)
+                    queue.songs.unshift(queue.songs[0]);
+                else if (queue.loop === 1) 
+                    queue.songs.push(queue.songs[0]);
+
+                queue.songs.shift();
+
+                if (queue.songs.length === 0) {
+                    connection.destroy();
+                    MusicChannel.update(guildId).then(() => {
+                        ServerQueue.delete(guildId); // queue 접근 불가
+                    });
+                }
+                else this.play(guildId);
+            });
+        } catch (err) {
+            console.log("음악 재생 중 에러가 발생했습니다 : " + err);
             queue.songs.shift();
-
-            if (queue.songs.length === 0) {
+            if (queue.songs.length > 0) {
+                this.play(guildId);
+            } else {
+                const connection = getVoiceConnection(guildId);
                 connection.destroy();
                 MusicChannel.update(guildId).then(() => {
-                    ServerQueue.delete(guildId); // queue 접근 불가
+                    ServerQueue.delete(guildId);
                 });
             }
-            else this.play(guildId);
-        });
+        }
     }
 }
 
