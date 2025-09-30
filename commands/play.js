@@ -139,6 +139,7 @@ async function waitForSelection(word, interaction, msg) {
         });
     
         collector.on("collect", async interaction => {
+            interaction.deferUpdate();
             resolve(items[parseInt(interaction.customId-1)].id.videoId);
             collector.stop("done");
         })
