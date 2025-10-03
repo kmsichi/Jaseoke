@@ -1,3 +1,4 @@
+const fs = require('node:fs');
 const { spawn } = require("child_process");
 const { createAudioPlayer, createAudioResource, AudioPlayerStatus, getVoiceConnection } = require('@discordjs/voice');
 const ServerQueue = require("./ServerQueue.js");
@@ -26,14 +27,16 @@ class MusicPlayer {
         const queue = ServerQueue.get(guildId);
         if (!queue) throw "에러 발생, queue가 존재하지 않습니다.";
         try {
+            const tempDir = `./music/temp/${guildId}`;
+            fs.mkdirSync(tempDir, { recursive: true });
             const ytDlpProcess = spawn("yt-dlp", [
                 "-f", "bestaudio",
                 "-o", "-",
                 "--no-playlist",
                 queue.songs[0].url
-            ]);
+            ], {env: process.env, cwd: tempDir});
 
-            const resource = createAudioResource(ytDlpProcess.stdout, {inputType: StreamType.Raw, inlineVolume: true});
+            const resource = createAudioResource(ytDlpProcess.stdout, {inlineVolume: true});
             const audioPlayer = createAudioPlayer();
             const connection = getVoiceConnection(guildId);
             
@@ -53,8 +56,9 @@ class MusicPlayer {
 
                 if (queue.songs.length === 0) {
                     connection.destroy();
+                    fs.rmSync(tempDir, { recursive: true, force: true });
                     MusicChannel.update(guildId).then(() => {
-                        ServerQueue.delete(guildId); // queue 접근 불가
+                        ServerQueue.delete(guildId);
                     });
                 }
                 else this.play(guildId);
