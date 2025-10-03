@@ -54,7 +54,7 @@ module.exports = {
         let videoId = word.match(pattern);
 
         let msg = new MessageWrapper();
-        await msg.deferReply(interaction);
+        await msg.defer(interaction);
 
         if (!videoId || !videoId[1]) 
             videoId = await waitForSelection(word, interaction, msg);
@@ -139,7 +139,7 @@ async function waitForSelection(word, interaction, msg) {
         });
     
         collector.on("collect", async interaction => {
-            interaction.deferUpdate();
+            msg.defer(interaction);
             resolve(items[parseInt(interaction.customId-1)].id.videoId);
             collector.stop("done");
         })
