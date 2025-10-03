@@ -1,28 +1,32 @@
 class MessageWrapper {
     sentMsg = undefined;
 
-    async deferReply(userInteract) {
+    async defer(userInteract) {
         if (userInteract.isChatInputCommand?.()) {
-            await userInteract.deferReply();
+            return await userInteract.deferReply();
+        } else if(userInteract.isButton?.()) {
+            return await userInteract.deferUpdate();
         } else {
             this.sentMsg = await userInteract.channel.send("Loading...");
+            return this.sentMsg;
         }
     }
 
     async reply(userInteract, content) {
         if (userInteract.isChatInputCommand?.()) {
-            await userInteract.reply(content);
+            return await userInteract.reply(content);
         } else {
             this.sentMsg = await userInteract.channel.send(content);
+            return this.sentMsg;
         }
     }
 
     async edit(userInteract, content) {
         if (userInteract.isChatInputCommand?.()) {
-            await userInteract.editReply(content);
+            return await userInteract.editReply(content);
         } else {
             if (!this.sentMsg) throw new Error("답장하지 않아 답장을 수정할 수 없습니다.")
-            await this.sentMsg.edit(content);
+            return await this.sentMsg.edit(content);
         }
     }
 }
