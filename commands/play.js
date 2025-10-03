@@ -92,7 +92,7 @@ module.exports = {
                 {name: `${await locale.getLanguage(lang, "message_play_channel") ?? "Channel"}`, value: song.channel, inline: true},
                 {name: `${await locale.getLanguage(lang, "message_play_length") ?? "Video length"}`, value: song.length, inline: true}
             );
-        await msg.edit(interaction, {embeds: [embed], components: []});
+        await msg.edit(interaction, {content: "", embeds: [embed], components: []});
     }
 }
 
