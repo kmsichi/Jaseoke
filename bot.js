@@ -54,7 +54,7 @@ client.on(Events.InteractionCreate, async interaction => {
         }
     } else if (interaction.isButton()) {
         const command = interaction.client.commands.get(interaction.customId);
-        if (command) 
+        if (command) {
             try {
                 await command.execute(interaction);
             } catch (err) {
@@ -65,6 +65,7 @@ client.on(Events.InteractionCreate, async interaction => {
                 else
                     await interaction.reply({content: errorMessage, flags: MessageFlags.Ephemeral})
             }
+        }
     }
 });
 
