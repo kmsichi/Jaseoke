@@ -13,6 +13,7 @@
     "message_repeat_mode_0": "I won't repeat the music!",
     "message_repeat_mode_1": "I will repeat the playlist!",
     "message_repeat_mode_2": "I will repeat this one song!",
+    "message_volume": "Volume has been adjusted to [volume]!",
     "error_no_voice": "Please join the voice channel before using the command.",
     "error_no_joinable": "😢 I can't join the voice channel—please don't ignore me!",
     "error_no_videoId": "Hmm, looks like that's not a vaild Youtube Video URL!",
@@ -22,5 +23,6 @@
     "error_while_command": "😵 Oops! Something went wrong while running the command.",
     "error_no_permission_manageChannel": "You need the ``Manage Channels`` permission to run this command!",
     "error_has_musicChannel": "A channel already exists! Please use [channel]!",
-    "error_no_setup": "Please stop the music before using this command!"
+    "error_no_setup": "Please stop the music before using this command!",
+    "error_volume_number": "The volume can only be adjusted between 0 - 200!"
 }

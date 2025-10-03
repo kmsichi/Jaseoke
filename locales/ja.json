@@ -14,6 +14,7 @@
     "message_repeat_mode_0": "音楽をリピートしません！",
     "message_repeat_mode_1": "プレイリストをリピート再生します！",
     "message_repeat_mode_2": "この曲だけをリピート再生します！",
+    "message_volume": "音量を [volume] に調整しました！",
     "error_no_voice": "ボイスチャンネルに入ってからコマンドを使ってください！",
     "error_no_joinable": "😢 ボイスチャンネルに参加する権限がありません…仲間外れにしないでください！",
     "error_no_videoId": "正しいYouTube動画のURLではありません！",
@@ -23,5 +24,6 @@
     "error_while_command": "😵 コマンド実行中にエラーが発生しました",
     "error_no_permission_manageChannel": "このコマンドを実行するには「チャンネル管理」の権限が必要です！",
     "error_has_musicChannel": "すでにチャンネルが存在します！[channel]をご利用ください！",
-    "error_no_setup": "音楽を停止してからコマンドを実行してください！"
+    "error_no_setup": "音楽を停止してからコマンドを実行してください！",
+    "error_volume_number": "音量は 0 ~ 200 の間でしか調整できません！"
 }

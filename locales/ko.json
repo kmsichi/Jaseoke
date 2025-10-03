@@ -14,6 +14,7 @@
     "message_repeat_mode_0": "노래를 반복하지 않을게요!",
     "message_repeat_mode_1": "플레이리스트를 반복해서 재생할게요!",
     "message_repeat_mode_2": "한 곡만 반복해서 재생할게요!",
+    "message_volume": "볼륨을 [volume] 로 조절했어요!",
     "error_no_voice": "음성 채널에 입장한 뒤 명령어를 이용해주세요!",
     "error_no_joinable": "😢 음성 채널에 들어갈 권한이 없어요.. 따돌리지 말아주세요!",
     "error_no_videoId": "올바른 유튜브 영상 주소가 아니에요!",
@@ -23,5 +24,6 @@
     "error_while_command": "😵 명령 실행 중 오류가 발생했어요.",
     "error_no_permission_manageChannel": "이 명령을 수행하려면 ``\"채널 관리하기\"`` 권한이 필요해요!",
     "error_has_musicChannel": "이미 채널이 존재해요! [channel] 에서 이용해주세요!",
-    "error_no_setup": "노래를 정지한 뒤에 명령어를 실행해주세요!"
+    "error_no_setup": "노래를 정지한 뒤에 명령어를 실행해주세요!",
+    "error_volume_number": "음량은 0 ~ 200 사이로만 조절할 수 있어요!"
 }
