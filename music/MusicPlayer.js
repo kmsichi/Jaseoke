@@ -1,5 +1,5 @@
-const { spawn, execSync } = require("child_process");
-const { createAudioPlayer, createAudioResource, AudioPlayerStatus, getVoiceConnection, StreamType } = require('@discordjs/voice');
+const { spawn } = require("child_process");
+const { createAudioPlayer, createAudioResource, AudioPlayerStatus, getVoiceConnection } = require('@discordjs/voice');
 const ServerQueue = require("./ServerQueue.js");
 const MusicChannel = require("./MusicChannel.js");
 
@@ -25,27 +25,15 @@ class MusicPlayer {
     play(guildId) {
         const queue = ServerQueue.get(guildId);
         if (!queue) throw "에러 발생, queue가 존재하지 않습니다.";
-
         try {
-            const streamUrl = execSync(`yt-dlp -f bestaudio --get-url --hls-use-mpegts ${queue.songs[0].url}`, {encoding: "utf-8"}).trim();
-            const ffmpeg = spawn("ffmpeg", [
-                "-re",
-                "-analyzeduration", "0",
-                "-loglevel", "0",
-                "-i", streamUrl,
-                "-f", "s16le",
-                "-ar", "48000",
-                "-ac", "2",
-                "-fflags", "+nobuffer",
-                "-flags", "low_delay",
-                "-flush_packets", 0,
-                "-reconnect", "1",
-                "-reconnect_streamed", "1",
-                "-reconnect_delay_max", "5",
-                "pipe:1"
-            ], { stdio: ['ignore', 'pipe', "pipe"] });
+            const ytDlpProcess = spawn("yt-dlp", [
+                "-f", "bestaudio",
+                "-o", "-",
+                "--no-playlist",
+                queue.songs[0].url
+            ]);
 
-            const resource = createAudioResource(ffmpeg.stdout, {inputType: StreamType.Raw, inlineVolume: true});
+            const resource = createAudioResource(ytDlpProcess.stdout, {inputType: StreamType.Raw, inlineVolume: true});
             const audioPlayer = createAudioPlayer();
             const connection = getVoiceConnection(guildId);
             
@@ -53,16 +41,8 @@ class MusicPlayer {
             audioPlayer.play(resource);
             MusicChannel.update(guildId);
 
-            ffmpeg.stderr.on("data", data => {
-                console.log("[ffmpeg]", data.toString());
-            });
-
-            ffmpeg.on("close", code => {
-                console.log("ffmpeg 종료 코드:", code);
-            });
-
-            audioPlayer.on(AudioPlayerStatus.Idle, () => {
-                ffmpeg.kill();
+        audioPlayer.on(AudioPlayerStatus.Idle, () => {
+            ffmpeg.kill();
 
                 if (queue.loop === 2)
                     queue.songs.unshift(queue.songs[0]);
