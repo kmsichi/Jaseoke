@@ -7,17 +7,17 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("volume")
         .setNameLocalizations({
-            "ko": "핑",
-            "ja": "ピン",
-            "zh-CN": "乒",
-            "zh-TW": "乒",
+            "ko": "볼륨",
+            "ja": "音量",
+            "zh-CN": "音量",
+            "zh-TW": "音量",
         })
         .setDescription("Set volume of song")
         .setDescriptionLocalizations({
-            "ko": "하면 퐁 해요",
-            "ja": "ポンと答えます",
-            "zh-CN": "就会说是乓",
-            "zh-TW": "就會說是乓",
+            "ko": "음악의 음량을 조절합니다.",
+            "ja": "音楽の音量を調整します。",
+            "zh-CN": "调节音乐音量。",
+            "zh-TW": "調節音樂音量。",
         })
         .addIntegerOption(option => option
             .setName("volume")
