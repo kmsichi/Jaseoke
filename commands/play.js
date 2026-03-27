@@ -5,6 +5,7 @@ const { getYoutubeVideoInfo, searchYoutubeVideo } = require("../util/YoutubeInfo
 const { secondsToString } = require("../util/SecondsToString.js");
 const locale = require("../util/Locale");
 const MessageWrapper = require("../util/MessageWrapper");
+const scdl = require('soundcloud-downloader').default;
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -47,23 +48,52 @@ module.exports = {
             return await interaction.reply({content: await locale.getLanguage(lang, "error_no_joinable") ?? "😢 I can't join the voice channel—please don't ignore me!", flags: MessageFlags.Ephemeral});
 
         let word = interaction.content ?? interaction.options.getString(`searchword`);
-        let videoDetails = undefined;
+        let songDetails = undefined;
 
-        // 유튜브 영상만을 처리
-        const pattern = new RegExp("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*");
-        let videoId = word.match(pattern);
+        let videoType = undefined;
+        let song = {
+            title: undefined,
+            author: `${interaction.member.user.globalName}(${interaction.member.user.tag})`,
+            channel: undefined,
+            length: undefined,
+            thumbnailUrl: undefined,
+            url: undefined,
+            platform: undefined
+        };
 
         let msg = new MessageWrapper();
         await msg.defer(interaction);
 
-        if (!videoId || !videoId[1]) 
-            videoId = await waitForSelection(word, interaction, msg);
-        else 
-            videoId = videoId[1];
+        if (scdl.isValidUrl(word)) {
+            videoType = "SoundCloud";
+            
+            songDetails = await scdl.getInfo(word);
+            song.url = songDetails.permalink_url;
+            song.title = songDetails.title;
+            song.thumbnailUrl = songDetails.user.avatar_url;
+            song.channel = songDetails.user.username;
+            song.length = secondsToString(songDetails.duration/1000);
+        } else {
+            const pattern = new RegExp("^.*(?:(?:youtu\\.be\\/|v\\/|vi\\/|u\\/\\w\\/|embed\\/)|(?:(?:watch)?\\?v(?:i)?=|\\&v(?:i)?=))([^#\\&\\?]*).*");
+            let videoId = word.match(pattern);
 
-        videoDetails = await getYoutubeVideoInfo(videoId);
-        if (!videoDetails)
-            return await msg.edit(interaction, {content: await locale.getLanguage(lang, "error_no_videoId") ?? "Hmm, looks like that's not a vaild Youtube Video URL!", flags: MessageFlags.Ephemeral});
+            if (!videoId || !videoId[1]) 
+                videoId = await waitForSelection(word, interaction, msg);
+            else 
+                videoId = videoId[1];
+
+            songDetails = await getYoutubeVideoInfo(videoId);
+            if (!songDetails)
+                return await msg.edit(interaction, {content: await locale.getLanguage(lang, "error_no_videoId") ?? "Hmm, looks like that's not a vaild Youtube / SoundCloud Video URL!", flags: MessageFlags.Ephemeral});
+
+            videoType = "Youtube";
+            song.url = "https://youtu.be/" + videoId;
+            song.title = songDetails.title;
+            song.thumbnailUrl = `https://img.youtube.com/vi/${videoId}/0.jpg`;
+            song.channel = songDetails.author;
+            song.length = secondsToString(songDetails.lengthSeconds);
+        }
+        song.platform = videoType;
 
         joinVoiceChannel({
             channelId: interaction.member.voice.channelId,
@@ -71,27 +101,23 @@ module.exports = {
             adapterCreator: interaction.guild.voiceAdapterCreator,
         });
 
-        let url = "https://youtu.be/" + videoId;
-        let song = {
-            title: videoDetails.title,
-            videoId: videoId,
-            author: `${interaction.member.user.globalName}(${interaction.member.user.tag})`,
-            channel: videoDetails.author,
-            length: secondsToString(videoDetails.lengthSeconds),
-            url: url
-        };
-        let count = await MusicPlayer.addsong(interaction.guildId, song);
+        let count = MusicPlayer.addsong(interaction.guildId, song);
         
         let embed = new EmbedBuilder()
-            .setAuthor({name: `#${count+1} ${await locale.getLanguage(lang, "message_play_addsong") ?? "Song Added"}`, icon_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/512px-YouTube_full-color_icon_%282017%29.svg.png", url: url})
             .setTitle(song.title)
-            .setColor("#ff0000")
-            .setThumbnail(`https://img.youtube.com/vi/${videoId}/0.jpg`)
-            .setURL(url)
+            .setURL(song.url)
+            .setThumbnail(song.thumbnailUrl)
             .addFields(
                 {name: `${await locale.getLanguage(lang, "message_play_channel") ?? "Channel"}`, value: song.channel, inline: true},
                 {name: `${await locale.getLanguage(lang, "message_play_length") ?? "Video length"}`, value: song.length, inline: true}
             );
+        if (videoType == "Youtube") { 
+            embed.setAuthor({name: `#${count+1} ${await locale.getLanguage(lang, "message_play_addsong") ?? "Song Added"}`, iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/512px-YouTube_full-color_icon_%282017%29.svg.png", url: song.url})
+            .setColor("#ff0033");
+        } else if (videoType == "SoundCloud") {
+            embed.setAuthor({name: `#${count+1} ${await locale.getLanguage(lang, "message_play_addsong") ?? "Song Added"}`, iconURL: "https://cdn.prod.website-files.com/62a0a0168756b795debc65bc/6862469207e5d6b29127bc31_791ac3ab0dddebdbe93c67a87e9cdd28_cloudmark-white-transparent.png", url: song.url})
+            .setColor("#FF3300");
+        }
         await msg.edit(interaction, {content: "", embeds: [embed], components: []});
     }
 }

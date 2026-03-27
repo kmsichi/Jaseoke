@@ -6,14 +6,14 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("playlist")
         .setNameLocalizations({
-            "ko": "목록",
+            "ko": "플레이리스트",
             "ja": "プレイリスト",
             "zh-CN": "播放列表",
             "zh-TW": "播放列表",
         })
         .setDescription("displays current playlist")
         .setDescriptionLocalizations({
-            "ko": "음성채널에 유튜브 영상을 재생합니다",
+            "ko": "플레이리스트 목록을 표시합니다.",
             "ja": "現在の再生リストを表示します",
             "zh-CN": "显示当前播放列表",
             "zh-TW": "顯示當前播放列表",
@@ -26,7 +26,7 @@ module.exports = {
         let titles = "";
         titles += `**${await locale.getLanguage(lang, "message_nowplaying") ?? "Now Playing"})** ${queue.songs[0].title} - ${queue.songs[0].author}\n`;
         for (let i = 1; i < queue.songs.length; i++) {
-            titles += `${i}) ` + queue.songs[i].title + ` - ${queue.songs[i].author}\n`
+            titles += `${i}) ` + queue.songs[i].title + ` - ${queue.songs[i].author} [${queue.songs[i].platform}]\n`
         }
         let embed = new EmbedBuilder()
             .setColor("#59DA50")

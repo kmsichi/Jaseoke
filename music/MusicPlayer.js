@@ -3,6 +3,7 @@ const { spawn } = require("child_process");
 const { createAudioPlayer, createAudioResource, AudioPlayerStatus, getVoiceConnection } = require('@discordjs/voice');
 const ServerQueue = require("./ServerQueue.js");
 const MusicChannel = require("./MusicChannel.js");
+const scdl = require('soundcloud-downloader').default;
 
 class MusicPlayer {
     addsong(guildId, song) {
@@ -23,20 +24,31 @@ class MusicPlayer {
         }
     }
 
-    play(guildId) {
+    async play(guildId) {
         const queue = ServerQueue.get(guildId);
         if (!queue) throw "에러 발생, queue가 존재하지 않습니다.";
         try {
             const tempDir = `./music/temp/${guildId}`;
             fs.mkdirSync(tempDir, { recursive: true });
-            const songStream = spawn("yt-dlp", [
-                "-f", "bestaudio",
-                "-o", "-",
-                "--no-playlist",
-                queue.songs[0].url
-            ]);
+            let songStream = undefined;
+            let resource = undefined;
 
-            const resource = createAudioResource(songStream.stdout, {inlineVolume: true});
+            switch (queue.songs[0].platform) {
+                case "Youtube":
+                    songStream = spawn("yt-dlp", [
+                        "-f", "bestaudio",
+                        "-o", "-",
+                        "--no-playlist",
+                        queue.songs[0].url
+                    ]);
+                    resource = createAudioResource(songStream.stdout, {inlineVolume: true});
+                    break;
+                case "SoundCloud":
+                    songStream = await scdl.download(queue.songs[0].url);
+                    resource = createAudioResource(songStream, {inlineVolume: true});
+                    break;
+            }
+
             const audioPlayer = createAudioPlayer();
             const connection = getVoiceConnection(guildId);
             
@@ -45,7 +57,7 @@ class MusicPlayer {
             MusicChannel.update(guildId);
 
             audioPlayer.on(AudioPlayerStatus.Idle, () => {
-                songStream.kill();
+                if (queue.songs[0].platform == "Youtube") songStream.kill();
 
                 if (queue.loop === 2)
                     queue.songs.unshift(queue.songs[0]);

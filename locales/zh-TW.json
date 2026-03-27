@@ -17,7 +17,7 @@
     "message_volume": "已將音量調整為 [volume]！",
     "error_no_voice": "請先進入語音頻道再使用指令！",
     "error_no_joinable": "😢 我沒有權限加入語音頻道……別把我孤立了！",
-    "error_no_videoId": "這不是有效的YouTube影片連結！",
+    "error_no_videoId": "這不是有效的Youtube / Soundcloud影片連結！",
     "error_no_queue": "目前沒有播放任何歌曲！",
     "error_no_samechannel": "只能在與我相同的語音頻道使用指令！",
     "error_no_such_command": "我不認識這個指令……請再試一次！",

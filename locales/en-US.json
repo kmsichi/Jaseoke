@@ -16,7 +16,7 @@
     "message_volume": "Volume has been adjusted to [volume]!",
     "error_no_voice": "Please join the voice channel before using the command.",
     "error_no_joinable": "😢 I can't join the voice channel—please don't ignore me!",
-    "error_no_videoId": "Hmm, looks like that's not a vaild Youtube Video URL!",
+    "error_no_videoId": "Hmm, looks like that's not a vaild Youtube / Soundcloud URL!",
     "error_no_queue": "I'm not playing any music right now!",
     "error_no_samechannel": "Please make sure you’re in the same voice channel when using commands!",
     "error_no_such_command": "I don’t recognize that command. Could you try again?",

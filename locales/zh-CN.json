@@ -17,7 +17,7 @@
     "message_volume": "已将音量调整为 [volume]!",
     "error_no_voice": "请先进入语音频道再使用命令！",
     "error_no_joinable": "😢 我没有权限加入语音频道……别把我孤立了！",
-    "error_no_videoId": "这不是有效的YouTube视频链接！",
+    "error_no_videoId": "这不是有效的Youtube / Soundcloud视频链接！",
     "error_no_queue": "当前没有播放任何歌曲！",
     "error_no_samechannel": "只能在与我相同的语音频道使用命令！",
     "error_no_such_command": "我不认识这个命令……请再试一次！",
