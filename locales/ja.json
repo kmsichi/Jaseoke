@@ -25,5 +25,6 @@
     "error_no_permission_manageChannel": "このコマンドを実行するには「チャンネル管理」の権限が必要です！",
     "error_has_musicChannel": "すでにチャンネルが存在します！[channel]をご利用ください！",
     "error_no_setup": "音楽を停止してからコマンドを実行してください！",
-    "error_volume_number": "音量は 0 ~ 200 の間でしか調整できません！"
+    "error_volume_number": "音量は 0 ~ 200 の間でしか調整できません！",
+    "error_no_search_data": "残念ながら、検索結果は見つかりませんでした。"
 }

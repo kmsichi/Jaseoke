@@ -24,5 +24,6 @@
     "error_no_permission_manageChannel": "You need the ``Manage Channels`` permission to run this command!",
     "error_has_musicChannel": "A channel already exists! Please use [channel]!",
     "error_no_setup": "Please stop the music before using this command!",
-    "error_volume_number": "The volume can only be adjusted between 0 - 200!"
+    "error_volume_number": "The volume can only be adjusted between 0 - 200!",
+    "error_no_search_data": "Unfortunately, no results were found."
 }

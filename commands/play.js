@@ -70,7 +70,7 @@ module.exports = {
             songDetails = await scdl.getInfo(word);
             song.url = songDetails.permalink_url;
             song.title = songDetails.title;
-            song.thumbnailUrl = songDetails.user.avatar_url;
+            song.thumbnailUrl = songDetails.artwork_url ?? songDetails.user.avatar_url;
             song.channel = songDetails.user.username;
             song.length = secondsToString(songDetails.duration/1000);
         } else {
@@ -81,6 +81,8 @@ module.exports = {
                 videoId = await waitForSelection(word, interaction, msg);
             else 
                 videoId = videoId[1];
+
+            if (videoId == undefined) return;
 
             songDetails = await getYoutubeVideoInfo(videoId);
             if (!songDetails)
@@ -124,6 +126,14 @@ module.exports = {
 
 async function waitForSelection(word, interaction, msg) {
     let items = await searchYoutubeVideo(word, 5);
+
+    // 에러 핸들링
+    if (items.length < 1) {
+        const message = await msg.edit(interaction, {content: await locale.getLanguage(interaction.locale, "error_no_search_data") ?? "Nothing Searched.", embeds: []});
+        return undefined;
+        //throw new Error(`검색에 실패했어요. 서버ID: ${interaction.guildId}, 사용자ID: ${interaction.user}`);
+    }
+
     let description = `${await locale.getLanguage(interaction.locale, "message_play_select_description") ?? "There are a total of [count] search results :"}\n`;
     description = description.replace("[count]", items.length);
     for (i=0; i<items.length; i++) 
