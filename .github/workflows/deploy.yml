@@ -12,11 +12,10 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    - name: Deploy & Restart Bot
+    - name: Deploy Bot
       run: |
         cd /home/discordbots/Jaseoke
         git reset --hard
         git pull origin master
         npm install
         node deployCommand.js
-        pm2 restart Jaseoke
