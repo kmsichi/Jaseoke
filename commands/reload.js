@@ -1,5 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const locale = require("../util/Locale");
+const path = require('path');
+const fs = require('fs');
 
 module.exports = {
     data: new SlashCommandBuilder()
