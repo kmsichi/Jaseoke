@@ -32,7 +32,7 @@ module.exports = {
                 const filePath = path.join(commandPath, file);
                 delete require.cache[require.resolve(filePath)];
             }
-            client.commands.clear();
+            interaction.client.commands.clear();
             console.log(`[자석이] 리로드 (1) : 모든 명령어 캐시를 비웁니다...`);
 
             if (fs.existsSync(utilPath)) {
@@ -65,10 +65,14 @@ module.exports = {
                 const newCommand = require(filePath);
                 
                 if (newCommand.data && newCommand.data.name) {
-                    client.commands.set(newCommand.data.name, newCommand);
+                    interaction.client.commands.set(newCommand.data.name, newCommand);
                     loadedCount++;
                 }
             }
+
+            const MusicChannel = require('../music/MusicChannel');
+            MusicChannel.setClient(interaction.client);
+            console.log(`[자석이] 리로드 (4) : 음악 파일에 클라이언트 정보를 등록합니다...`)
 
             await interaction.editReply(`[자석이] 전체 시스템 리로드 완료했습니다.\n${loadedCount} 개의 명령어가 로드되었습니다.`);
         } catch (error) {
