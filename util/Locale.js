@@ -7,13 +7,13 @@ class Locale {
         if (this.localeCache.has(locale)) {
             const langCache = this.localeCache.get(locale);
             if (!langCache.has(key)) {
-                let sentence = this.getSentence(locale, key);
+                let sentence = await this.getSentence(locale, key);
                 langCache.set(key, sentence);
             }
             return langCache.get(key);
         } else {
             let langCache = new Map();
-            langCache.set(key, this.getSentence(locale, key));
+            langCache.set(key, await this.getSentence(locale, key));
             this.localeCache.set(locale, langCache);
             return langCache.get(key);
         }
