@@ -1,10 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Events, GatewayIntentBits } = require("discord.js");
-const { MessageFlags } = require('discord.js');
-const locale = require("./util/Locale");
+const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const MusicChannel = require('./music/MusicChannel');
-const Database = require('./util/Database.js');
 require("dotenv").config();
 
 const client = new Client({ intents: [
@@ -28,59 +25,16 @@ for (const file of commandFiles) {
     }
 }
 
-client.once(Events.ClientReady, readyClient => {
-    let db = new Database();
-    db.init();
-    console.log(`[자석이] ${readyClient.user.tag}, 온라인!`);
-})
-
-client.on(Events.InteractionCreate, async interaction => {
-    if (interaction.isChatInputCommand()) {
-        const command = interaction.client.commands.get(interaction.commandName);
-        if (!command) {
-            console.error(`${interaction.commandName} 명령어가 존재하지 않으나, 실행이 시도되었습니다.`);
-            return interaction.reply({content: await locale.getLanguage(lang, "error_no_such_command") ?? "I don’t recognize that command. Could you try again?", flags: MessageFlags.Ephemeral});
-        }
-
-        try {
-            await command.execute(interaction);
-        } catch (err) {
-            let errorMessage = await locale.getLanguage(interaction.locale, "error_while_command") ?? "😵 Oops! Something went wrong while running the command.";
-            console.error("명령어 실행 중 에러가 발생했습니다 : " + err);
-            if (interaction.replied || interaction.deferred) 
-                await interaction.followUp({content: errorMessage, flags: MessageFlags.Ephemeral})
-            else
-                await interaction.reply({content: errorMessage, flags: MessageFlags.Ephemeral})
-        }
-    } else if (interaction.isButton()) {
-        const command = interaction.client.commands.get(interaction.customId);
-        if (command) {
-            try {
-                await command.execute(interaction);
-            } catch (err) {
-                let errorMessage = await locale.getLanguage(interaction.locale, "error_while_command") ?? "😵 Oops! Something went wrong while running the command.";
-                console.error("명령어 실행 중 에러가 발생했습니다 : " + err);
-                if (interaction.replied || interaction.deferred) 
-                    await interaction.followUp({content: errorMessage, flags: MessageFlags.Ephemeral})
-                else
-                    await interaction.reply({content: errorMessage, flags: MessageFlags.Ephemeral})
-            }
-        }
-    }
-});
-
-client.on(Events.MessageCreate, async message => {
-    if (!message.inGuild()) return;
-    let channelId = await MusicChannel.check(message.guildId);
-    if (message.channelId == channelId) {
-        if (!message.member.user.bot) {
-            const cmd = client.commands.get("play");
-            cmd.execute(message);
-        }
-        setTimeout(() => {
-            message.delete().catch(() => null);
-        }, 10000)
-    }
-});
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
+for (const file of eventFiles) {
+	const filePath = path.join(eventsPath, file);
+	const event = require(filePath);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	} else {
+		client.on(event.name, (...args) => event.execute(...args));
+	}
+}
 
 client.login(process.env.DISCORD_BOT_TOKEN);
