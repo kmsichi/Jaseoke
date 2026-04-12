@@ -29,7 +29,7 @@ module.exports = {
 
             const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.js'));
             for (const file of commandFiles) {
-                const filePath = path.join(cmdPath, file);
+                const filePath = path.join(commandPath, file);
                 delete require.cache[require.resolve(filePath)];
             }
             client.commands.clear();
