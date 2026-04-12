@@ -29,6 +29,10 @@ class Locale {
             return undefined;
         }
     }
+
+    clearCache() {
+        this.localeCache.clear();
+    }
 }
 
 module.exports = new Locale();
