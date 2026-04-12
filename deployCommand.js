@@ -24,7 +24,7 @@ const rest = new REST().setToken(process.env.DISCORD_BOT_TOKEN);
 
 (async () => {
 	try {
-		console.log(`[자석이] ${commands.length} 개 명령어를 새로고침 합니다..`);
+		console.log(`[자석이] ${globalCommands.length} 개 명령어를 새로고침 합니다..`);
 
 		const globalData = await rest.put(
 			Routes.applicationCommands(process.env.DISCORD_CLIENT_ID),
