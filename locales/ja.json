@@ -26,5 +26,6 @@
     "error_has_musicChannel": "すでにチャンネルが存在します！[channel]をご利用ください！",
     "error_no_setup": "音楽を停止してからコマンドを実行してください！",
     "error_volume_number": "音量は 0 ~ 200 の間でしか調整できません！",
-    "error_no_search_data": "残念ながら、検索結果は見つかりませんでした。"
+    "error_no_search_data": "残念ながら、検索結果は見つかりませんでした。",
+    "error_musicapi_version": "申し訳ありません！アップデートされたため、バージョンが合いません！ :( すべての音楽を停止して、コマンドを再実行していただけますか？"
 }

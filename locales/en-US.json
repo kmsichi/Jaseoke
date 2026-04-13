@@ -25,5 +25,6 @@
     "error_has_musicChannel": "A channel already exists! Please use [channel]!",
     "error_no_setup": "Please stop the music before using this command!",
     "error_volume_number": "The volume can only be adjusted between 0 - 200!",
-    "error_no_search_data": "Unfortunately, no results were found."
+    "error_no_search_data": "Unfortunately, no results were found.",
+    "error_musicapi_version": "Sorry! I've been updated, so the version doesn't match! :( Could you please stop all music and run the command again?"
 }

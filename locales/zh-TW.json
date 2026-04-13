@@ -26,5 +26,6 @@
     "error_has_musicChannel": "頻道已存在！請使用[channel]！",
     "error_no_setup": "請先停止音樂再執行此指令！",
     "error_volume_number": "音量只能在 0 ~ 200 之間調整！",
-    "error_no_search_data": "很抱歉，沒有搜尋到相關內容。"
+    "error_no_search_data": "很抱歉，沒有搜尋到相關內容。",
+    "error_musicapi_version": "抱歉！我已經更新了，所以版本不匹配！ :( 請您停止所有音樂並重新執行指令好嗎？"
 }

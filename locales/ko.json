@@ -26,5 +26,6 @@
     "error_has_musicChannel": "이미 채널이 존재해요! [channel] 에서 이용해주세요!",
     "error_no_setup": "노래를 정지한 뒤에 명령어를 실행해주세요!",
     "error_volume_number": "음량은 0 ~ 200 사이로만 조절할 수 있어요!",
-    "error_no_search_data": "아쉽게도 아무것도 검색하지 못했어요 😢"
+    "error_no_search_data": "아쉽게도 아무것도 검색하지 못했어요 😢",
+    "error_musicapi_version": "죄송합니다! 제가 업데이트되어서, 버전이 안 맞아요..! 😢 모든 음악을 정지하고 명령어를 다시 실행해주시겠어요?"
 }
