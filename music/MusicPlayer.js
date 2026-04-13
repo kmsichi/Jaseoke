@@ -4,14 +4,20 @@ const { createAudioPlayer, createAudioResource, AudioPlayerStatus, getVoiceConne
 const ServerQueue = require("./ServerQueue.js");
 const MusicChannel = require("./MusicChannel.js");
 const scdl = require('soundcloud-downloader').default;
+const CURRENT_API_VERSION = "1";
 
 class MusicPlayer {
+    validate(ver) {
+        return !!(ver === CURRENT_API_VERSION);
+    }
+
     addsong(guildId, song) {
         if (!ServerQueue.has(guildId)) {
             let guildQueue = {
                 songs: [],
                 loop: false,
-                pause: false
+                pause: false,
+                version: CURRENT_API_VERSION
             };
             guildQueue.songs.push(song);
             ServerQueue.set(guildId, guildQueue);
@@ -19,6 +25,8 @@ class MusicPlayer {
             return 0;
         } else {
             let queue = ServerQueue.get(guildId);
+            if (!this.validate(queue.version))
+                throw new Error("API Version Mismatch");
             queue.songs.push(song);
             return queue.songs.length-1;
         }

@@ -102,8 +102,14 @@ module.exports = {
             guildId: interaction.guildId,
             adapterCreator: interaction.guild.voiceAdapterCreator,
         });
-
-        let count = MusicPlayer.addsong(interaction.guildId, song);
+        
+        let count;
+        try {
+            count = MusicPlayer.addsong(interaction.guildId, song);
+        } catch(error) {
+            console.log("에러 감지, Music API 버전 미스매치 : \n" + error)
+            return msg.edit(interaction, {content: `${await locale.getLanguage(lang, "error_musicapi_version") ?? "Sorry! I've been updated, so the version doesn't match! :( Could you please stop all music and run the command again?"}`, embeds: [], components: []});
+        }
         
         let embed = new EmbedBuilder()
             .setTitle(song.title)
