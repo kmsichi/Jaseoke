@@ -2,14 +2,14 @@ const { Events } = require('discord.js');
 const MusicChannel = require('../music/MusicChannel');
 
 module.exports = {
-	name: Events.InteractionCreate,
+	name: Events.MessageCreate,
 	once: false,
 	async execute(message) {
         if (!message.inGuild()) return;
         let channelId = await MusicChannel.check(message.guildId);
         if (message.channelId == channelId) {
             if (!message.member.user.bot) {
-                const cmd = client.commands.get("play");
+                const cmd = message.client.commands.get("play");
                 cmd.execute(message);
             }
             setTimeout(() => {
