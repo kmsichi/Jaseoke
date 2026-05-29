@@ -89,8 +89,8 @@ class MusicChannel {
             if (queue.songs.length > 0) {
                 title = `[${queue.songs[0].length}] - ${queue.songs[0].title}`
                 description += `**현재 재생 중 :** ${queue.songs[0].title}\n`;
-                image = `https://img.youtube.com/vi/${queue.songs[0].videoId}/0.jpg`;
-                url = `https://youtu.be/${queue.songs[0].videoId}`;
+                image = queue.songs[0].thumbnailUrl;
+                url = queue.songs[0].url;
                 for (let i=1; i<queue.songs.length; i++) 
                     description += `${i}. ${queue.songs[i].title}\n`;
                 if (queue.pause)
